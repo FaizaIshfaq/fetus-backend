@@ -234,7 +234,8 @@ class RegisterUserAPIView(views.APIView):
             },
         }
         """
-
+        print(request)
+        print(request.body, request.POST)
         try:
             serializer = RegisterUserSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -275,6 +276,7 @@ class RegisterUserAPIView(views.APIView):
                     },
                 }, status=status.HTTP_200_OK)
         except Exception as e:
+            print(e)
             return Response({
                 "response_code": status.HTTP_400_BAD_REQUEST,
                 "response_message": _('Some thing went wrong. Please try again later.'),
