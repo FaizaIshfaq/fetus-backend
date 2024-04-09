@@ -2,7 +2,7 @@ from django.http import Http404
 from django.contrib.auth.hashers import check_password
 from django.utils.translation import gettext_lazy as _
 
-from rest_framework import views, permissions, status, viewsets, mixins, exceptions
+from rest_framework import views, permissions, status, viewsets, mixins
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -10,6 +10,10 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from .auth import UserTokenAuthentication
 from utils.mixins import PaginationMixin
 from utils.paginations import FetusPageNumberPagination
+from utils.exceptions import (
+    UserException,
+    handle_exceptions
+)
 from .models import User
 from .serializers import (
     UserSerializer,
@@ -30,15 +34,6 @@ class UsersViewSet(
     pagination_class = FetusPageNumberPagination
     authentication_classes = [UserTokenAuthentication]
     queryset = User.objects.all().order_by('id')
-
-    class UserException(exceptions.APIException):
-        status_code = status.HTTP_403_FORBIDDEN
-        default_detail = {
-            'response_code': status.HTTP_403_FORBIDDEN,
-            'response_message': _('User with provided token/id is not valid.'),
-            'data': None
-        }
-        default_code = 'invalid_user'
 
     def list(self, request):
         """
@@ -84,7 +79,7 @@ class UsersViewSet(
                     'response_message': _('User details sent successfully.')
                 }, status=status.HTTP_200_OK)
         except Exception as e:
-            return self.handle_exceptions(e, 'No user details found.')
+            return handle_exceptions(e, 'No user details found.')
 
     def update(self, request, *args, **kwargs):
         """
@@ -127,7 +122,7 @@ class UsersViewSet(
                     'response_message': _('User updated successfully.'),
                 }, status=status.HTTP_200_OK)
         except Exception as e:
-            return self.handle_exceptions(e, 'User does not exist.')
+            return handle_exceptions(e, 'User does not exist.')
 
     def retrieve(self, request, *args, **kwargs):
         """
@@ -161,11 +156,11 @@ class UsersViewSet(
                     'response_message': _('User details sent successfully.'),
                 }, status=status.HTTP_200_OK)
         except Exception as e:
-            return self.handle_exceptions(e, 'User does not exist.')
+            return handle_exceptions(e, 'User does not exist.')
 
     def delete(self, request, pk):
         """
-        API to retrieve details of a single user.
+        API to de-activate a User
 
         ### Example Request:
             DELETE /api/users/<user_id>/
@@ -198,30 +193,11 @@ class UsersViewSet(
                     "data": UserSerializer(user_to_deactivate).data,
                 }, status=status.HTTP_200_OK)
         except Exception as e:
-            return self.handle_exceptions(e, 'User does not exist.')
+            return handle_exceptions(e, 'User does not exist.')
 
     def validate_request_user(self, request, instance):
         if not request.user == instance:
-            raise UsersViewSet.UserException()
-
-    def handle_exceptions(self, e, message):
-        if isinstance(e, Http404):
-            return Response({
-                'status': status.HTTP_404_NOT_FOUND,
-                'data': None,
-                'response_message': _(message),
-            }, status=status.HTTP_404_NOT_FOUND)
-        if isinstance(e, UsersViewSet.UserException):
-            return Response(
-                e.default_detail,
-                status=e.status_code
-            )
-        else:
-            return Response({
-                'status': status.HTTP_400_BAD_REQUEST,
-                'data': None,
-                'response_message': _('Something went wrong. Please try again later.'),
-            }, status=status.HTTP_400_BAD_REQUEST)
+            raise UserException()
 
 
 class RegisterUserAPIView(views.APIView):
@@ -235,10 +211,9 @@ class RegisterUserAPIView(views.APIView):
         ### Example Request:
         POST /api/register/
         {
-            "name" : "test23",
-            "email": "test_signup2@yopmail.com",
             "first_name": "test",
             "last_name": "23"
+            "email": "test_signup2@yopmail.com",
             "password": "123",
             "phone_number": "123456"
         }
@@ -249,14 +224,13 @@ class RegisterUserAPIView(views.APIView):
             "response_message": "User registered successfully.",
             "data": {
                 'user': {
-                    "name" : "test23",
-                    "email": "test_signup2@yopmail.com",
+                    "id": 14,
                     "first_name": "test",
                     "last_name": "23"
-                    "password": "123",
-                    "phone_number": "123456"
+                    "email": "test_signup2@yopmail.com",
+                    "phone_number": "123456",
+                    "profile_image": null
                 },
-                "jwt_token": "",
             },
         }
         """
@@ -288,7 +262,7 @@ class RegisterUserAPIView(views.APIView):
                 first_name=payload.get('first_name'),
                 last_name=payload.get('last_name'),
                 phone_number=payload.get('phone_number'),
-                is_logged_in=True,
+                is_logged_in=False,
             )
             user.set_password(payload.get("password"))
             user.save()
@@ -329,12 +303,12 @@ class LoginAPIView(views.APIView):
             "response_message": Logged in successfully.,
             "data": {
                 'user': {
-                    "name" : "test23",
-                    "email": "test_signup2@yopmail.com",
+                    "id": 13,
                     "first_name": "test",
                     "last_name": "23"
-                    "password": "123",
+                    "email": "test_signup2@yopmail.com",
                     "phone_number": "123456"
+                    "profile_image": "/media/pexels-luca-nardone-4827696_MBMxW8e.jpg"
                 },
             },
         },
