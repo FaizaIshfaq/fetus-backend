@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'users',
+    'patients',
     'corsheaders',
 ]
 
@@ -123,7 +124,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-print(MEDIA_ROOT)
 MEDIA_URL = '/media/'
 
 
@@ -148,4 +148,5 @@ CORS_ALLOW_CREDENTIALS = False
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:49302',
+    'http://localhost:8000',
 ]

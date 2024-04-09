@@ -4,8 +4,8 @@ from django.db import models
 class Patient(models.Model):
 
     class Gender(models.TextChoices):
-        MALE = "1", "Male"
-        FEMALE = "2", "Female"
+        MALE = "m", "Male"
+        FEMALE = "f", "Female"
 
     class Trimester(models.TextChoices):
         FIRST = "1", "First"
@@ -21,7 +21,7 @@ class Patient(models.Model):
         max_length=255,
     )
     last_name = models.CharField(
-        'first_name',
+        'last_name',
         max_length=255,
     )
     date_of_birth = models.DateField(
@@ -68,3 +68,10 @@ class Patient(models.Model):
         null=True,
         blank=True
     )
+    is_active = models.BooleanField(
+        'is_active',
+        default=True
+    )
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
