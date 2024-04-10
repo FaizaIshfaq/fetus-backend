@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.generics import get_object_or_404
 from rest_framework import viewsets, mixins, status, permissions
 from rest_framework.response import Response
+from rest_framework import generics, filters
 
 from utils.mixins import PaginationMixin
 from utils.paginations import FetusPageNumberPagination
@@ -16,6 +17,7 @@ from .serializers import PatientSerializer
 
 
 class PatientViewSet(
+    generics.ListAPIView,
     viewsets.GenericViewSet,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -27,8 +29,10 @@ class PatientViewSet(
     authentication_classes = [UserTokenAuthentication]
     serializer_class = PatientSerializer
     queryset = Patient.objects.filter(is_active=True).order_by('id')
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name']
 
-    def list(self, request):
+    def list(self, request, *args, **kwargs):
         """
         API to list all patients
 
