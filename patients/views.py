@@ -97,13 +97,13 @@ class PatientViewSet(
                 "first_name": "f",
                 "last_name": "i",
                 "date_of_birth": "2001-10-20",
-                "gender": "f",
                 "examine_date": "2024-6-06",
                 "trimester": "2",
                 "blood_group": "O+",
                 "age": 21,
                 "examine_by": "Doctor",
                 "phone_number": "92302240912"
+                "profile_image": "image_to_upload"
             }
         ### Example Response:
         {
@@ -146,7 +146,6 @@ class PatientViewSet(
                 first_name=payload.get('first_name'),
                 last_name=payload.get('last_name'),
                 date_of_birth=payload.get('date_of_birth'),
-                gender=payload.get('gender'),
                 examine_date=payload.get('examine_date'),
                 trimester=payload.get('trimester'),
                 blood_group=payload.get('blood_group'),
@@ -156,6 +155,8 @@ class PatientViewSet(
             )
             if payload.get('email'):
                 patient.email = payload.get('email')
+            if request.data.get('profile_image'):
+                patient.profile_image = request.data.get('profile_image')
 
             patient.save()
 
@@ -163,10 +164,11 @@ class PatientViewSet(
                 "response_code": status.HTTP_201_CREATED,
                 "response_message": _('Patient created successfully.'),
                 "data": {
-                    'patient': self.serializer_class(patient).data,
+                    'patient': self.get_serializer(patient).data,
                 },
             }, status=status.HTTP_200_OK)
         except Exception as e:
+            print(e)
             return handle_exceptions(e, 'Unable to create patient.')
 
     def update(self, request, *args, **kwargs):
@@ -176,11 +178,16 @@ class PatientViewSet(
         ### Example Request:
             PUT /api/patients/<patient_id>/
             {
-                "first_name": "Mitra",
-                "last_name": "Home",
-                "phone_number": "004912225922",
-                "email": "test123@example.com".
-                "profile_image": 'image_to_upload.png',
+                "first_name": "f",
+                "last_name": "i",
+                "date_of_birth": "2001-10-20",
+                "examine_date": "2024-6-06",
+                "trimester": "2",
+                "blood_group": "O+",
+                "age": 21,
+                "examine_by": "Doctor",
+                "phone_number": "92302240912"
+                "profile_image": "image_to_upload"
             }
         ### Example Response:
             {

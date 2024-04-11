@@ -3,10 +3,6 @@ from django.db import models
 
 class Patient(models.Model):
 
-    class Gender(models.TextChoices):
-        MALE = "m", "Male"
-        FEMALE = "f", "Female"
-
     class Trimester(models.TextChoices):
         FIRST = "1", "First"
         SECOND = "2", "Second"
@@ -27,11 +23,6 @@ class Patient(models.Model):
     date_of_birth = models.DateField(
         'date_of_birth',
         max_length=8
-    )
-    gender = models.CharField(
-        'gender',
-        max_length=1,
-        choices=Gender.choices
     )
     examine_date = models.DateField(
         'examine_date',
