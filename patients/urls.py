@@ -6,6 +6,8 @@ from .views import *
 router = DefaultRouter()
 router.register(r'patients', PatientViewSet, basename='patients')
 
-urlpatterns = []
+urlpatterns = [
+    path('patients/appointments/', PatientAppointmentsAPIView.as_view(), name='patient-appointments')
+]
 
 urlpatterns = urlpatterns + router.urls

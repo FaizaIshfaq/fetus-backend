@@ -1,4 +1,5 @@
 from django.db import models
+from doctors.models import Doctor
 
 
 class Patient(models.Model):
@@ -40,9 +41,10 @@ class Patient(models.Model):
     age = models.IntegerField(
         'age'
     )
-    examine_by = models.CharField(
-        "examine_by",
-        max_length=255
+    examine_by = models.ForeignKey(
+        Doctor,
+        on_delete=models.SET_NULL,
+        null=True
     )
     email = models.CharField(
         "email",
@@ -63,6 +65,10 @@ class Patient(models.Model):
         'is_active',
         default=True
     )
+
+    @property
+    def name(self):
+        return self.__str__()
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

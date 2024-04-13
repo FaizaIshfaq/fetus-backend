@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'users',
     'patients',
+    'doctors',
     'corsheaders',
     'django_filters',
 ]
