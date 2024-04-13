@@ -76,10 +76,10 @@ class UsersViewSet(
             return Response({
                     'response_code': status.HTTP_200_OK,
                     'data': serializer.data,
-                    'response_message': _('User details sent successfully.')
+                    'response_message': _('Patient details sent successfully.')
                 }, status=status.HTTP_200_OK)
         except Exception as e:
-            return handle_exceptions(e, 'No user details found.')
+            return handle_exceptions(e, 'No patient details found.')
 
     def update(self, request, *args, **kwargs):
         """
@@ -234,8 +234,6 @@ class RegisterUserAPIView(views.APIView):
             },
         }
         """
-        print(request)
-        print(request.body, request.POST)
         try:
             serializer = RegisterUserSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
