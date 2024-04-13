@@ -7,7 +7,8 @@ router = DefaultRouter()
 router.register(r'patients', PatientViewSet, basename='patients')
 
 urlpatterns = [
-    path('patients/appointments/', PatientAppointmentsAPIView.as_view(), name='patient-appointments')
+    path('patient/appointments/', PatientAppointmentsAPIView.as_view(), name='patient-appointments'),
+    path('patient/records/', PatientRecordsAPIView.as_view(), name='patient-records')
 ]
 
 urlpatterns = urlpatterns + router.urls

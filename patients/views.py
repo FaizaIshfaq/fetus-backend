@@ -126,6 +126,14 @@ class PatientAppointmentsAPIView(
     ).order_by('id')
 
 
+class PatientRecordsAPIView(
+    PatientBaseAPIView
+):
+    queryset = Patient.objects.filter(
+        is_active=True, examine_date__lt=datetime.date.today()
+    ).order_by('id')
+
+
 class PatientViewSet(
     viewsets.GenericViewSet,
     mixins.RetrieveModelMixin,
