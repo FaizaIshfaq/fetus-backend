@@ -228,7 +228,7 @@ class PatientViewSet(
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
-            handle_exceptions(e, 'Unable to create patient')
+            return handle_exceptions(e, 'Unable to create patient')
 
     def retrieve(self, request, *args, **kwargs):
         """

@@ -8,6 +8,7 @@ class PatientAdmin(admin.ModelAdmin):
     list_display = ('id', 'first_name', 'last_name', 'blood_group', 'age', 'phone_number', 'is_active')
     search_fields = ('first_name', 'last_name', 'email', 'phone_number')
     ordering = ['id']
+    readonly_fields = ['examine']
 
 
 admin.site.register(Patient, PatientAdmin)

@@ -1,5 +1,6 @@
 from django.db import models
 from doctors.models import Doctor
+from patient_examine.models import PatientExamine
 
 
 class Patient(models.Model):
@@ -42,9 +43,16 @@ class Patient(models.Model):
         'age'
     )
     examine_by = models.ForeignKey(
-        Doctor,
+        to=Doctor,
         on_delete=models.SET_NULL,
         null=True
+    )
+    examine = models.ForeignKey(
+        to=PatientExamine,
+        related_name='examine',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
     email = models.CharField(
         "email",
