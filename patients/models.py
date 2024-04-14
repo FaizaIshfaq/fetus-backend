@@ -1,6 +1,6 @@
 from django.db import models
 from doctors.models import Doctor
-from patient_examine.models import PatientExamine
+from patient_examine.models import PatientFemurExamine, PatientHeadExamine
 
 
 class Patient(models.Model):
@@ -47,9 +47,16 @@ class Patient(models.Model):
         on_delete=models.SET_NULL,
         null=True
     )
-    examine = models.ForeignKey(
-        to=PatientExamine,
-        related_name='examine',
+    femur_examine = models.ForeignKey(
+        to=PatientFemurExamine,
+        related_name='femur_examine',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+    head_examine = models.ForeignKey(
+        to=PatientHeadExamine,
+        related_name='head_examine',
         on_delete=models.SET_NULL,
         null=True,
         blank=True

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Patient
 
 from doctors.serializers import DoctorSerializer
-from patient_examine.serializers import PatientExamineSerializer
+from patient_examine.serializers import PatientFemurExamineSerializer, PatientHeadExamineSerializer
 
 
 class PatientSerializer(serializers.ModelSerializer):
@@ -18,8 +18,12 @@ class PatientSerializer(serializers.ModelSerializer):
             if instance.examine_by is None \
             else DoctorSerializer(instance.examine_by).data
 
-        response['examine'] = None \
+        response['femur_examine'] = None \
             if instance.examine is None \
-            else PatientExamineSerializer(instance.examine).data
+            else PatientFemurExamineSerializer(instance.examine).data
+
+        response['head_examine'] = None \
+            if instance.examine is None \
+            else PatientHeadExamineSerializer(instance.examine).data
 
         return response

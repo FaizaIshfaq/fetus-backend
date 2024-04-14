@@ -1,9 +1,15 @@
 from rest_framework import serializers
 
-from .models import PatientExamine
+from .models import PatientFemurExamine, PatientHeadExamine
 
 
-class PatientExamineSerializer(serializers.ModelSerializer):
+class PatientFemurExamineSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PatientExamine
+        model = PatientFemurExamine
+        fields = serializers.ALL_FIELDS
+
+
+class PatientHeadExamineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientHeadExamine
         fields = serializers.ALL_FIELDS
