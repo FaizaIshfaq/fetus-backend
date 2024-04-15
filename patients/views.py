@@ -5,9 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework.generics import get_object_or_404
-from rest_framework import viewsets, mixins, status, permissions
+from rest_framework import viewsets, mixins, status, permissions, generics, filters
 from rest_framework.response import Response
-from rest_framework import generics, filters
 
 from utils.mixins import PaginationMixin
 from utils.paginations import FetusPageNumberPagination
@@ -16,8 +15,10 @@ from utils.exceptions import (
 )
 from users.auth import UserTokenAuthentication
 from doctors.models import Doctor
+
 from .models import Patient
 from .serializers import PatientSerializer
+from .filters import PatientFilters
 
 
 class PatientBaseAPIView(
@@ -29,13 +30,8 @@ class PatientBaseAPIView(
     authentication_classes = [UserTokenAuthentication]
     serializer_class = PatientSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_class = PatientFilters
     search_fields = ['first_name', 'last_name', 'email', 'phone_number']
-    filterset_fields = {
-        'examine_date': ["in"],
-        'age': ["in"],
-        'trimester': ["exact"],
-        'examine_by': ["exact"],
-    }
 
     def list(self, request, *args, **kwargs):
         """
@@ -48,55 +44,48 @@ class PatientBaseAPIView(
             "response_code": 200,
             "data": {
                 "total_pages": 1,
-                "count": 2,
+                "count": 1,
                 "next": null,
                 "previous": null,
                 "results": [
                     {
                         "id": 1,
-                        "first_name": "khj",
-                        "last_name": "njklhj",
-                        "date_of_birth": "2024-04-12",
-                        "examine_date": "2024-04-12",
+                        "first_name": "sfadghd",
+                        "last_name": "fudge",
+                        "date_of_birth": "2024-04-14",
+                        "examine_date": "2024-04-14",
                         "trimester": "1",
                         "blood_group": "O+",
-                        "age": 22,
+                        "age": 29,
                         "email": null,
-                        "phone_number": "98765432",
+                        "phone_number": "324567890",
                         "profile_image": null,
                         "is_active": true,
                         "examine_by": {
                             "id": 1,
-                            "name": "Doctor 1",
+                            "name": "deaksof;lj",
                             "gender": "m",
-                            "qualification": "MBBS",
-                            "specialization": "Spec-1"
-                        }
-                    },
-                    {
-                        "id": 2,
-                        "first_name": "f",
-                        "last_name": "i",
-                        "date_of_birth": "2001-10-20",
-                        "examine_date": "2024-06-06",
-                        "trimester": "2",
-                        "blood_group": "O+",
-                        "age": 21,
-                        "email": null,
-                        "phone_number": "923022409",
-                        "profile_image": null,
-                        "is_active": true,
-                        "examine_by": {
-                            "id": 1,
-                            "name": "Doctor 1",
-                            "gender": "m",
-                            "qualification": "MBBS",
-                            "specialization": "Spec-1"
+                            "qualification": "dsf",
+                            "specialization": "sdfgh"
+                        },
+                        "femur_examine": {
+                            "id": 7,
+                            "femur_image": "/media/WhatsApp_Image_2024-04-14_at_9.12.16_PM_Wc1U2mh.jpeg",
+                            "pixel_depth": 0.114338452166,
+                            "femur_length": 42,
+                            "femur_age": 23
+                        },
+                        "head_examine": {
+                            "id": 6,
+                            "head_image": "/media/WhatsApp_Image_2024-04-14_at_9.12.14_PM_1ZJy7WP.jpeg",
+                            "pixel_depth": 0.0691358041234,
+                            "head_circumference": 78,
+                            "gestational_age": 12
                         }
                     }
                 ]
             },
-            "response_message": "User details sent successfully."
+            "response_message": "Patient details sent successfully."
         }
         """
 
@@ -112,9 +101,10 @@ class PatientBaseAPIView(
             return Response({
                     'response_code': status.HTTP_200_OK,
                     'data': serializer.data,
-                    'response_message': _('User details sent successfully.')
+                    'response_message': _('Patient details sent successfully.')
                 }, status=status.HTTP_200_OK)
         except Exception as e:
+            print(e)
             return handle_exceptions(e, 'No patients details found.')
 
 

@@ -19,11 +19,11 @@ class PatientSerializer(serializers.ModelSerializer):
             else DoctorSerializer(instance.examine_by).data
 
         response['femur_examine'] = None \
-            if instance.examine is None \
-            else PatientFemurExamineSerializer(instance.examine).data
+            if instance.femur_examine is None \
+            else PatientFemurExamineSerializer(instance.femur_examine).data
 
         response['head_examine'] = None \
-            if instance.examine is None \
-            else PatientHeadExamineSerializer(instance.examine).data
+            if instance.head_examine is None \
+            else PatientHeadExamineSerializer(instance.head_examine).data
 
         return response
