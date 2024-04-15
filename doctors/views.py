@@ -1,8 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 
-from rest_framework import status, permissions
+from rest_framework import status, permissions, generics, filters
 from rest_framework.response import Response
-from rest_framework import generics
 
 from utils.exceptions import (
     handle_exceptions
@@ -18,10 +17,15 @@ class DoctorAPIView(generics.ListAPIView):
     authentication_classes = [UserTokenAuthentication]
     serializer_class = DoctorSerializer
     queryset = Doctor.objects.all()
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
     def list(self, request, *args, **kwargs):
         try:
-            serializer = self.get_serializer(self.get_queryset(), many=True)
+            serializer = self.get_serializer(
+                self.filter_queryset(
+                    self.get_queryset()
+                )[:5], many=True)
 
             return Response({
                     'response_code': status.HTTP_200_OK,
